@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>Card.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Card.java</font>
+</center></td></tr></table>
+<pre><span class="s0">public class </span><span class="s1">Card </span><span class="s2">{</span>
+
+    <span class="s0">private int </span><span class="s1">v</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">String suit</span><span class="s2">;</span>
+
+    <span class="s0">private </span><span class="s1">String colour</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Card</span><span class="s2">(</span><span class="s0">int </span><span class="s1">v</span><span class="s2">, </span><span class="s1">String suit</span><span class="s2">, </span><span class="s1">String colour</span><span class="s2">){</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">v </span><span class="s2">= </span><span class="s1">v</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">suit </span><span class="s2">= </span><span class="s1">suit</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">colour </span><span class="s2">= </span><span class="s1">colour</span><span class="s2">;</span>
+
+    <span class="s2">}</span>
+
+    <span class="s3">//getters</span>
+
+    <span class="s0">public int </span><span class="s1">getValue</span><span class="s2">(){</span>
+        <span class="s0">return </span><span class="s1">v</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">String getSuit</span><span class="s2">(){</span>
+        <span class="s0">return </span><span class="s1">suit</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">String getColour</span><span class="s2">(){</span><span class="s0">return </span><span class="s1">colour</span><span class="s2">;}</span>
+
+    <span class="s0">public </span><span class="s1">String toString</span><span class="s2">(){</span>
+        <span class="s0">return </span><span class="s2">(</span><span class="s1">v </span><span class="s2">+ </span><span class="s4">&quot; of &quot; </span><span class="s2">+ </span><span class="s1">suit </span><span class="s2">+ </span><span class="s4">&quot;. &quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

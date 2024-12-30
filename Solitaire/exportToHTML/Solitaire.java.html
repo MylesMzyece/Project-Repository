@@ -1,0 +1,361 @@
+<html>
+<head>
+<title>Solitaire.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+.s5 { color: #6aab73;}
+.s6 { color: #5f826b; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Solitaire.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">acm</span><span class="s2">.</span><span class="s1">program</span><span class="s2">.</span><span class="s1">ConsoleProgram</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">acm</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">RandomGenerator</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">sql</span><span class="s2">.</span><span class="s1">Array</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">ArrayList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">logging</span><span class="s2">.</span><span class="s1">Handler</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">Solitaire </span><span class="s0">extends </span><span class="s1">ConsoleProgram </span><span class="s2">{</span>
+    <span class="s1">Deck gameDeck </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Deck</span><span class="s2">();</span>
+
+
+    <span class="s0">public </span><span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Hand</span><span class="s2">&gt; </span><span class="s1">piles</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Hand</span><span class="s2">&gt; </span><span class="s1">foundationPiles</span><span class="s2">;</span>
+
+    <span class="s3">// Initialize Hand objects</span>
+
+    <span class="s1">Hand mainPile </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Hand</span><span class="s2">();</span>
+    <span class="s1">Hand threeStack </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Hand</span><span class="s2">();</span>
+    <span class="s1">Hand heartPile </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Hand</span><span class="s2">();</span>
+    <span class="s1">Hand diamondPile</span><span class="s2">= </span><span class="s0">new </span><span class="s1">Hand</span><span class="s2">();</span>
+    <span class="s1">Hand clubPile </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Hand</span><span class="s2">();</span>
+    <span class="s1">Hand spadePile </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Hand</span><span class="s2">();</span>
+    <span class="s1">Hand selectedCards </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Hand</span><span class="s2">();</span>
+
+    <span class="s0">int </span><span class="s1">moves </span><span class="s2">= </span><span class="s4">0</span><span class="s2">;</span>
+    <span class="s0">int </span><span class="s1">userInput</span><span class="s2">;</span>
+
+    <span class="s1">Card tempCard</span><span class="s2">;</span>
+    <span class="s0">boolean </span><span class="s1">pilesEmpty</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">RandomGenerator rgen </span><span class="s2">= </span><span class="s0">new </span><span class="s1">RandomGenerator</span><span class="s2">();</span>
+
+
+    <span class="s0">public void </span><span class="s1">run</span><span class="s2">(){</span>
+        <span class="s1">piles </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Hand</span><span class="s2">&gt;();</span>
+        <span class="s1">foundationPiles </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Hand</span><span class="s2">&gt;();</span>
+
+        <span class="s1">setUpGame</span><span class="s2">();</span>
+        <span class="s1">listInstructions</span><span class="s2">();</span>
+        <span class="s1">playGame</span><span class="s2">();</span>
+
+
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Congrats, you beat Solitaire.&quot;</span><span class="s2">);</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;It took you &quot;</span><span class="s2">+ </span><span class="s1">moves </span><span class="s2">+ </span><span class="s5">&quot; moves.&quot;</span><span class="s2">);</span>
+
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">printPiles</span><span class="s2">(){</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s4">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s4">7</span><span class="s2">; </span><span class="s1">i </span><span class="s2">++){</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Pile &quot; </span><span class="s2">+ (</span><span class="s1">i</span><span class="s2">+</span><span class="s4">1</span><span class="s2">) + </span><span class="s5">&quot;: &quot; </span><span class="s2">+ </span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">));</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">printWastePile</span><span class="s2">(){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">threeStack</span><span class="s2">.</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">false</span><span class="s2">) {</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Waste Pile: &quot; </span><span class="s2">+ </span><span class="s1">threeStack</span><span class="s2">.</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">threeStack</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() - </span><span class="s4">1</span><span class="s2">).</span><span class="s1">toString</span><span class="s2">());</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">printFoundationPile</span><span class="s2">(){</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Hearts (Pile 9): &quot; </span><span class="s2">+ </span><span class="s1">heartPile</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Diamonds (Pile 10): &quot; </span><span class="s2">+ </span><span class="s1">diamondPile</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Spades (Pile 11): &quot; </span><span class="s2">+ </span><span class="s1">spadePile</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Clubs (Pile 12): &quot; </span><span class="s2">+ </span><span class="s1">clubPile</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setUpGame</span><span class="s2">(){</span>
+        <span class="s1">gameDeck</span><span class="s2">.</span><span class="s1">shuffle</span><span class="s2">();</span>
+        <span class="s1">makePiles</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">makePiles</span><span class="s2">() {</span>
+        <span class="s3">// Initialize and populate numbered piles</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s4">1</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt;= </span><span class="s4">7</span><span class="s2">; </span><span class="s1">i</span><span class="s2">++) {</span>
+            <span class="s1">Hand pile </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Hand</span><span class="s2">();</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">j </span><span class="s2">= </span><span class="s4">0</span><span class="s2">; </span><span class="s1">j </span><span class="s2">&lt; </span><span class="s1">i</span><span class="s2">; </span><span class="s1">j</span><span class="s2">++) {</span>
+                <span class="s1">pile</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">gameDeck</span><span class="s2">.</span><span class="s1">deal</span><span class="s2">());</span>
+            <span class="s2">}</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">pile</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Populate mainPile with remaining cards from gameDeck</span>
+        <span class="s0">while </span><span class="s2">(!</span><span class="s1">gameDeck</span><span class="s2">.</span><span class="s1">deckIsEmpty</span><span class="s2">()) {</span>
+            <span class="s1">mainPile</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">gameDeck</span><span class="s2">.</span><span class="s1">deal</span><span class="s2">());</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Add special piles</span>
+        <span class="s1">piles</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">threeStack</span><span class="s2">);</span>
+        <span class="s1">piles</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">heartPile</span><span class="s2">);</span>
+        <span class="s1">piles</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">diamondPile</span><span class="s2">);</span>
+        <span class="s1">piles</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">spadePile</span><span class="s2">);</span>
+        <span class="s1">piles</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">clubPile</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">listInstructions</span><span class="s2">() {</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Are you ready for some Solitaire?!&quot;</span><span class="s2">);</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;If you would like to shuffle through the stock pile, enter the number 14.&quot;</span><span class="s2">);</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;If you would like to pick from the stock pile, enter the number 8.&quot;</span><span class="s2">);</span>
+        <span class="s1">printPiles</span><span class="s2">();</span>
+        <span class="s1">printFoundationPile</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">tableauPlayed</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">&lt;=</span><span class="s4">7</span><span class="s2">){</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">} </span><span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">wastePilePlayed</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">== </span><span class="s4">8</span><span class="s2">){</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">} </span><span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">shuffleWastePilePlayed</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">== </span><span class="s4">14</span><span class="s2">){</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">} </span><span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">foundationPilePlayed</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">&gt;= </span><span class="s4">9 </span><span class="s2">&amp;&amp; </span><span class="s1">userInput </span><span class="s2">&lt;</span><span class="s4">13</span><span class="s2">){</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">} </span><span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">tableauPlayedSpecial</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">&gt;= </span><span class="s4">15</span><span class="s2">){</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        <span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">playGame</span><span class="s2">() {</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">isPlaying</span><span class="s2">()) {</span>
+            <span class="s1">userInput </span><span class="s2">= </span><span class="s1">getInput</span><span class="s2">();</span>
+            <span class="s1">processUserMove</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">);</span>
+            <span class="s1">printGameStatus</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">isPlaying</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">heartPile</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() != </span><span class="s4">13 </span><span class="s2">&amp;&amp; </span><span class="s1">clubPile</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() != </span><span class="s4">13 </span><span class="s2">&amp;&amp; </span><span class="s1">spadePile</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() != </span><span class="s4">13 </span><span class="s2">&amp;&amp; </span><span class="s1">diamondPile</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() != </span><span class="s4">13</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private int </span><span class="s1">getInput</span><span class="s2">() {</span>
+        <span class="s0">int </span><span class="s1">userInput </span><span class="s2">= </span><span class="s1">readInt</span><span class="s2">(</span><span class="s5">&quot;Enter the number of the card pile which you would like to pick from: &quot;</span><span class="s2">);</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">);</span>
+        <span class="s0">return </span><span class="s1">userInput</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">tableauMoveIsValid</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">tableauPlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">)</span>
+                <span class="s2">&amp;&amp; </span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">false</span>
+                <span class="s2">&amp;&amp; !</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">size</span><span class="s2">() - </span><span class="s4">1</span><span class="s2">).</span><span class="s1">getColour</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getColour</span><span class="s2">())</span>
+                <span class="s2">&amp;&amp; </span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">size</span><span class="s2">() - </span><span class="s4">1</span><span class="s2">).</span><span class="s1">getValue</span><span class="s2">() == </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() + </span><span class="s4">1</span><span class="s2">)</span>
+        <span class="s2">{</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        <span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">foundationPileIsEmpty</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">foundationPilePlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">) &amp;&amp; </span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">handIsEmpty</span><span class="s2">()){</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        <span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">foundationPileIsntEmpty</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">foundationPilePlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">) &amp;&amp; !</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">handIsEmpty</span><span class="s2">()){</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        <span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">tableauIsEmpty</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">handIsEmpty</span><span class="s2">() &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() ==</span><span class="s4">13</span><span class="s2">){</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        <span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">processUserMove</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">tableauPlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">) || </span><span class="s1">wastePilePlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">) || </span><span class="s1">foundationPilePlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">)) {</span>
+            <span class="s1">preventPullEmpty</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">);</span>
+            <span class="s1">moves</span><span class="s2">++;</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">shuffleWastePilePlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">)) {</span>
+            <span class="s1">shuffleWastePile</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+        <span class="s6">/** First input is necessary for returning a player's card to its original position in the event that</span>
+         <span class="s6">* the player makes an illegal card maneuver</span>
+         <span class="s6">*/</span>
+
+        <span class="s0">int </span><span class="s1">firstInput </span><span class="s2">= </span><span class="s1">userInput</span><span class="s2">;</span>
+
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">tableauPlayedSpecial</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">)) {</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">);</span>
+            <span class="s1">tempCard </span><span class="s2">= </span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">dealTop</span><span class="s2">();</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">handleSpecialMove</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">userInput </span><span class="s2">= </span><span class="s1">readInt</span><span class="s2">(</span><span class="s5">&quot;Now select which pile you would like to move your card to: &quot;</span><span class="s2">);</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">tableauMoveIsValid</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">)){</span>
+            <span class="s1">addToTableau</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">foundationPileIsEmpty</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">)) {</span>
+            <span class="s1">addToEmptyFoundation</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">, </span><span class="s1">firstInput</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">foundationPileIsntEmpty</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">)) {</span>
+            <span class="s1">addToFoundation</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">, </span><span class="s1">firstInput</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">tableauIsEmpty</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">)) {</span>
+            <span class="s1">addToEmptyTableau</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">illegalMove</span><span class="s2">(</span><span class="s1">firstInput</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">addToTableau</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s1">moves</span><span class="s2">++;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">addToFoundation </span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">, </span><span class="s0">int </span><span class="s1">firstInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getSuit</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s5">&quot;Hearts&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() - </span><span class="s4">1 </span><span class="s2">== </span><span class="s1">heartPile</span><span class="s2">.</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">heartPile</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() - </span><span class="s4">1</span><span class="s2">).</span><span class="s1">getValue</span><span class="s2">()) {</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">8</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getSuit</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s5">&quot;Diamonds&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() - </span><span class="s4">1 </span><span class="s2">== </span><span class="s1">diamondPile</span><span class="s2">.</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">diamondPile</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() - </span><span class="s4">1</span><span class="s2">).</span><span class="s1">getValue</span><span class="s2">()) {</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">9</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getSuit</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s5">&quot;Spades&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() - </span><span class="s4">1 </span><span class="s2">== </span><span class="s1">spadePile</span><span class="s2">.</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">spadePile</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() - </span><span class="s4">1</span><span class="s2">).</span><span class="s1">getValue</span><span class="s2">()) {</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">10</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getSuit</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s5">&quot;Clubs&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() - </span><span class="s4">1 </span><span class="s2">== </span><span class="s1">clubPile</span><span class="s2">.</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">clubPile</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() - </span><span class="s4">1</span><span class="s2">).</span><span class="s1">getValue</span><span class="s2">()) {</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">11</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">firstInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Illegal card maneuver.&quot;</span><span class="s2">);</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Please select different cards.&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">moves</span><span class="s2">++;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">addToEmptyFoundation</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">, </span><span class="s0">int </span><span class="s1">firstInput</span><span class="s2">){</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getSuit</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s5">&quot;Hearts&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() == </span><span class="s4">1</span><span class="s2">) {</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">8</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getSuit</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s5">&quot;Diamonds&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() == </span><span class="s4">1</span><span class="s2">) {</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">9</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getSuit</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s5">&quot;Spades&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() == </span><span class="s4">1</span><span class="s2">) {</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">10</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getSuit</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s5">&quot;Clubs&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">tempCard</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">() == </span><span class="s4">1</span><span class="s2">) {</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">firstInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Illegal card maneuver.&quot;</span><span class="s2">);</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Please select different cards.&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">moves</span><span class="s2">++;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">addToEmptyTableau</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">){</span>
+        <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s1">moves</span><span class="s2">++;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">illegalMove </span><span class="s2">(</span><span class="s0">int </span><span class="s1">firstInput</span><span class="s2">){</span>
+        <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">firstInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">);</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Illegal card maneuver.&quot;</span><span class="s2">);</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Please select different cards.&quot;</span><span class="s2">);</span>
+        <span class="s1">moves</span><span class="s2">++;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">preventPullEmpty</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">) {</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">handIsEmpty</span><span class="s2">()) {</span>
+            <span class="s1">userInput </span><span class="s2">= </span><span class="s1">readInt</span><span class="s2">(</span><span class="s5">&quot;Enter the number of a card pile with cards in it: &quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">private void </span><span class="s1">shuffleWastePile</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">) {</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">shuffleWastePilePlayed</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">userInput</span><span class="s2">)) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">threeStack</span><span class="s2">.</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">true </span><span class="s2">&amp;&amp; </span><span class="s1">mainPile</span><span class="s2">.</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">false</span><span class="s2">) {</span>
+                <span class="s1">threeStack</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">mainPile</span><span class="s2">.</span><span class="s1">dealTop</span><span class="s2">());</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">mainPile</span><span class="s2">.</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">false</span><span class="s2">) {</span>
+                <span class="s1">tempCard </span><span class="s2">= </span><span class="s1">threeStack</span><span class="s2">.</span><span class="s1">dealTop</span><span class="s2">();</span>
+                <span class="s1">mainPile</span><span class="s2">.</span><span class="s1">addAt</span><span class="s2">(</span><span class="s1">tempCard</span><span class="s2">, </span><span class="s4">0</span><span class="s2">);</span>
+                <span class="s1">threeStack</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">mainPile</span><span class="s2">.</span><span class="s1">dealTop</span><span class="s2">());</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Main Pile: &quot;</span><span class="s2">+</span><span class="s1">mainPile</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;The main pile is empty.&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s1">printGameStatus</span><span class="s2">();</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">userInput </span><span class="s2">= </span><span class="s1">readInt</span><span class="s2">(</span><span class="s5">&quot;Enter the number of the card pile which you would like to pick from: &quot;</span><span class="s2">);</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">moves</span><span class="s2">++;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">handleSpecialMove</span><span class="s2">(</span><span class="s0">int </span><span class="s1">userInput</span><span class="s2">) {</span>
+        <span class="s0">int </span><span class="s1">numCards</span><span class="s2">;</span>
+        <span class="s1">userInput </span><span class="s2">= </span><span class="s1">readInt</span><span class="s2">(</span><span class="s5">&quot;This option allows you to select how many cards to move around. Pick a pile first: &quot;</span><span class="s2">);</span>
+
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">true</span><span class="s2">) {</span>
+            <span class="s1">userInput </span><span class="s2">= </span><span class="s1">readInt</span><span class="s2">(</span><span class="s5">&quot;Enter the number of a card pile with cards in it (Pick from pile 1-7): &quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">numCards </span><span class="s2">= </span><span class="s1">readInt</span><span class="s2">(</span><span class="s5">&quot;Now select how many cards you would like to pick: &quot;</span><span class="s2">);</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s4">0</span><span class="s2">; </span><span class="s1">i</span><span class="s2">&lt;</span><span class="s1">numCards</span><span class="s2">; </span><span class="s1">i</span><span class="s2">++){</span>
+            <span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">dealTop</span><span class="s2">());</span>
+        <span class="s2">}</span>
+        <span class="s1">userInput </span><span class="s2">= </span><span class="s1">readInt</span><span class="s2">(</span><span class="s5">&quot;Finally, enter where you would like to move the cards: &quot;</span><span class="s2">);</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">false </span><span class="s2">&amp;&amp;</span>
+                <span class="s1">tableauPlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">) &amp;&amp;</span>
+                <span class="s2">!</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">size</span><span class="s2">()-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">getColour</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">size</span><span class="s2">()-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">getColour</span><span class="s2">()) &amp;&amp;</span>
+                <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">size</span><span class="s2">()-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">getValue</span><span class="s2">()-</span><span class="s4">1 </span><span class="s2">==  </span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">size</span><span class="s2">()-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">getValue</span><span class="s2">()){</span>
+            <span class="s0">while </span><span class="s2">(</span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">false</span><span class="s2">){</span>
+                <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">dealTop</span><span class="s2">());</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">handIsEmpty</span><span class="s2">()==</span><span class="s0">true </span><span class="s2">&amp;&amp;</span>
+                <span class="s1">tableauPlayed</span><span class="s2">(</span><span class="s1">userInput</span><span class="s2">) &amp;&amp;</span>
+                <span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">getCard</span><span class="s2">(</span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">size</span><span class="s2">()-</span><span class="s4">1</span><span class="s2">).</span><span class="s1">getValue</span><span class="s2">() ==</span><span class="s4">13</span><span class="s2">) {</span>
+            <span class="s0">while </span><span class="s2">(</span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">handIsEmpty</span><span class="s2">() == </span><span class="s0">false</span><span class="s2">) {</span>
+                <span class="s1">piles</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">userInput </span><span class="s2">- </span><span class="s4">1</span><span class="s2">).</span><span class="s1">add</span><span class="s2">(</span><span class="s1">selectedCards</span><span class="s2">.</span><span class="s1">dealTop</span><span class="s2">());</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">printPiles</span><span class="s2">();</span>
+        <span class="s1">moves</span><span class="s2">++;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">printGameStatus</span><span class="s2">() {</span>
+        <span class="s1">printPiles</span><span class="s2">();</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">);</span>
+        <span class="s1">printFoundationPile</span><span class="s2">();</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">);</span>
+        <span class="s1">printWastePile</span><span class="s2">();</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
