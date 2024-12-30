@@ -1,0 +1,264 @@
+<html>
+<head>
+<title>Maze.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #bcbec4;}
+.s5 { color: #cf8e6d;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Maze.c</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/1/24.</span>
+<span class="s0">//</span>
+
+<span class="s2">#include </span><span class="s3">&quot;Maze.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdio.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdlib.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdbool.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;string.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;time.h&gt;</span>
+
+
+
+
+<span class="s0">// Reads the maze from a file and returns a dynamically allocated 2D array of characters</span>
+<span class="s1">Maze</span><span class="s4">* </span><span class="s1">readFile</span><span class="s4">(</span><span class="s5">const char</span><span class="s4">* </span><span class="s1">fileName</span><span class="s4">) {</span>
+    <span class="s1">Maze</span><span class="s4">* </span><span class="s1">maze </span><span class="s4">= </span><span class="s1">malloc</span><span class="s4">(</span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Maze</span><span class="s4">));</span>
+    <span class="s0">//open the file for reading using 'r' read mode, if file is empty, return null.</span>
+    <span class="s1">FILE </span><span class="s4">*</span><span class="s1">fptr </span><span class="s4">= </span><span class="s1">fopen</span><span class="s4">(</span><span class="s1">fileName</span><span class="s4">, </span><span class="s3">&quot;r&quot;</span><span class="s4">);</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">fptr </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">) {</span>
+        <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;Error opening file!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">);</span>
+        <span class="s5">return </span><span class="s1">NULL</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s0">//initialize the parameters for th 2d char array.</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows </span><span class="s4">= </span><span class="s6">0</span><span class="s4">;</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">cols </span><span class="s4">= </span><span class="s6">0</span><span class="s4">;</span>
+    <span class="s5">char </span><span class="s1">ch</span><span class="s4">;</span>
+    <span class="s0">//boolean is used to track whether it is reading the first line--this is used to see the number of columns.</span>
+    <span class="s1">bool firstLine </span><span class="s4">= </span><span class="s1">true</span><span class="s4">;</span>
+
+    <span class="s0">//Go through the file once, counting the number of rows and columns.</span>
+    <span class="s0">//reads the file, character by character, until the end of file (EOF)</span>
+    <span class="s5">while </span><span class="s4">((</span><span class="s1">ch </span><span class="s4">= </span><span class="s1">fgetc</span><span class="s4">(</span><span class="s1">fptr</span><span class="s4">)) != </span><span class="s1">EOF</span><span class="s4">) {</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">ch </span><span class="s4">== </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s4">) {</span>
+            <span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows</span><span class="s4">)++;</span>
+            <span class="s1">firstLine </span><span class="s4">= </span><span class="s1">false</span><span class="s4">;</span>
+        <span class="s4">} </span><span class="s5">else if </span><span class="s4">(</span><span class="s1">firstLine</span><span class="s4">) {</span>
+            <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">cols</span><span class="s4">++;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows</span><span class="s4">++; </span><span class="s0">// Count the last row that doesn't end with \n</span>
+
+    <span class="s0">//Rewind and go through the file again, this time creating and added the chars to a 2d Char Array.</span>
+    <span class="s1">rewind</span><span class="s4">(</span><span class="s1">fptr</span><span class="s4">);</span>
+    <span class="s0">//allocate memory for the 2d array. Allocate space for row and col pointers.</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray </span><span class="s4">= (</span><span class="s5">char</span><span class="s4">**)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s5">char</span><span class="s4">*));</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces </span><span class="s4">= (</span><span class="s1">Coordinate</span><span class="s4">**)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Coordinate</span><span class="s4">*));</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++) {</span>
+        <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">i</span><span class="s4">] = (</span><span class="s5">char</span><span class="s4">*)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">cols </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s5">char</span><span class="s4">));</span>
+        <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">i</span><span class="s4">] = (</span><span class="s1">Coordinate</span><span class="s4">*)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">cols </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Coordinate</span><span class="s4">));</span>
+    <span class="s4">}</span>
+
+    <span class="s0">// Read the file content into the 2D array</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++) {</span>
+        <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">j </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">j </span><span class="s4">&lt; </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">cols</span><span class="s4">; </span><span class="s1">j</span><span class="s4">++) {</span>
+            <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] = </span><span class="s1">fgetc</span><span class="s4">(</span><span class="s1">fptr</span><span class="s4">);  </span><span class="s0">// Read character by character</span>
+            <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">]=(</span><span class="s1">Coordinate</span><span class="s4">){</span><span class="s1">i</span><span class="s4">,</span><span class="s1">j</span><span class="s4">};</span>
+        <span class="s4">}</span>
+        <span class="s1">fgetc</span><span class="s4">(</span><span class="s1">fptr</span><span class="s4">); </span><span class="s0">// This reads the newline character and discards it</span>
+    <span class="s4">}</span>
+
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">visited </span><span class="s4">= </span><span class="s1">initLinkedList</span><span class="s4">();</span>
+
+    <span class="s0">//close and return maze</span>
+    <span class="s1">fclose</span><span class="s4">(</span><span class="s1">fptr</span><span class="s4">);</span>
+    <span class="s5">return </span><span class="s1">maze</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s0">//finds the start of the maze and returns coordinate of S location in maze</span>
+<span class="s1">Coordinate findStart</span><span class="s4">(</span><span class="s1">Maze</span><span class="s4">* </span><span class="s1">maze</span><span class="s4">){</span>
+  <span class="s1">Coordinate start </span><span class="s4">= {-</span><span class="s6">1</span><span class="s4">,</span><span class="s6">1</span><span class="s4">};</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">y </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">y </span><span class="s4">&lt; </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows</span><span class="s4">; </span><span class="s1">y</span><span class="s4">++) {</span>
+        <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">x </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">x </span><span class="s4">&lt; </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">cols</span><span class="s4">; </span><span class="s1">x</span><span class="s4">++) {</span>
+            <span class="s0">//if coordinate is S,  set start to coordinate location</span>
+            <span class="s5">if </span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">y</span><span class="s4">][</span><span class="s1">x</span><span class="s4">] == </span><span class="s3">'S'</span><span class="s4">) {</span>
+                <span class="s5">return </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">y</span><span class="s4">][</span><span class="s1">x</span><span class="s4">];</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+    <span class="s5">return </span><span class="s1">start</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">int </span><span class="s1">coordinateCmp</span><span class="s4">(</span><span class="s5">void</span><span class="s4">* </span><span class="s1">a</span><span class="s4">, </span><span class="s5">void </span><span class="s4">*</span><span class="s1">b</span><span class="s4">) {</span>
+    <span class="s1">Coordinate</span><span class="s4">* </span><span class="s1">coord1 </span><span class="s4">= </span><span class="s1">a</span><span class="s4">;</span>
+    <span class="s1">Coordinate</span><span class="s4">* </span><span class="s1">coord2 </span><span class="s4">= </span><span class="s1">b</span><span class="s4">;</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">coord1</span><span class="s4">-&gt;</span><span class="s1">y </span><span class="s4">&lt; </span><span class="s1">coord2</span><span class="s4">-&gt;</span><span class="s1">y</span><span class="s4">) {</span>
+        <span class="s5">return </span><span class="s4">-</span><span class="s6">1</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">coord1</span><span class="s4">-&gt;</span><span class="s1">y </span><span class="s4">&gt; </span><span class="s1">coord2</span><span class="s4">-&gt;</span><span class="s1">y</span><span class="s4">) {</span>
+        <span class="s5">return </span><span class="s6">1</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">coord1</span><span class="s4">-&gt;</span><span class="s1">x </span><span class="s4">&lt; </span><span class="s1">coord2</span><span class="s4">-&gt;</span><span class="s1">x</span><span class="s4">) {</span>
+        <span class="s5">return </span><span class="s4">-</span><span class="s6">1</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">coord1</span><span class="s4">-&gt;</span><span class="s1">x </span><span class="s4">&gt; </span><span class="s1">coord2</span><span class="s4">-&gt;</span><span class="s1">x</span><span class="s4">) {</span>
+        <span class="s5">return </span><span class="s6">1</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s5">return </span><span class="s6">0</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s0">//creates a linked list of all possible valid neighbors.</span>
+<span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">findValidNeighbors</span><span class="s4">(</span><span class="s1">Maze</span><span class="s4">* </span><span class="s1">maze</span><span class="s4">, </span><span class="s1">Coordinate z</span><span class="s4">) {</span>
+    <span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">validNeighbors </span><span class="s4">= </span><span class="s1">initLinkedList</span><span class="s4">();</span>
+    <span class="s0">//array of possible moves</span>
+    <span class="s1">Coordinate moves</span><span class="s4">[</span><span class="s6">4</span><span class="s4">] = {</span>
+        <span class="s4">{</span><span class="s1">z</span><span class="s4">.</span><span class="s1">y </span><span class="s4">- </span><span class="s6">1</span><span class="s4">, </span><span class="s1">z</span><span class="s4">.</span><span class="s1">x</span><span class="s4">},  </span><span class="s0">// Up</span>
+        <span class="s4">{</span><span class="s1">z</span><span class="s4">.</span><span class="s1">y </span><span class="s4">+ </span><span class="s6">1</span><span class="s4">, </span><span class="s1">z</span><span class="s4">.</span><span class="s1">x</span><span class="s4">},  </span><span class="s0">// Down</span>
+        <span class="s4">{</span><span class="s1">z</span><span class="s4">.</span><span class="s1">y</span><span class="s4">, </span><span class="s1">z</span><span class="s4">.</span><span class="s1">x </span><span class="s4">- </span><span class="s6">1</span><span class="s4">},  </span><span class="s0">// Left</span>
+        <span class="s4">{</span><span class="s1">z</span><span class="s4">.</span><span class="s1">y</span><span class="s4">, </span><span class="s1">z</span><span class="s4">.</span><span class="s1">x </span><span class="s4">+ </span><span class="s6">1</span><span class="s4">}   </span><span class="s0">// Right</span>
+    <span class="s4">};</span>
+
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s6">4</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++) {</span>
+        <span class="s1">Coordinate move </span><span class="s4">= </span><span class="s1">moves</span><span class="s4">[</span><span class="s1">i</span><span class="s4">];</span>
+        <span class="s0">//if coordinate is a possible move is a + or the E for end</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">move</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">move</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] == </span><span class="s3">'+' </span><span class="s4">|| </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">move</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">move</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] == </span><span class="s3">'E'</span><span class="s4">) {</span>
+            <span class="s5">if </span><span class="s4">(!</span><span class="s1">contains</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">visited</span><span class="s4">, &amp;</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">move</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">move</span><span class="s4">.</span><span class="s1">x</span><span class="s4">], </span><span class="s1">coordinateCmp</span><span class="s4">)) {  </span><span class="s0">// Ensure the coordinate hasn't been visited</span>
+                <span class="s1">addAtTail</span><span class="s4">(</span><span class="s1">validNeighbors</span><span class="s4">, &amp;</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">move</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">move</span><span class="s4">.</span><span class="s1">x</span><span class="s4">]);</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+    <span class="s5">return </span><span class="s1">validNeighbors</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s0">//tracks visited coordinates</span>
+<span class="s5">void </span><span class="s1">addVisited</span><span class="s4">(</span><span class="s1">Maze </span><span class="s4">*</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">Coordinate z</span><span class="s4">){</span>
+    <span class="s5">if </span><span class="s4">(!</span><span class="s1">contains</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">visited</span><span class="s4">, &amp;</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">z</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">z</span><span class="s4">.</span><span class="s1">x</span><span class="s4">], </span><span class="s1">coordinateCmp</span><span class="s4">)) {</span>
+        <span class="s1">addAtTail</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">visited</span><span class="s4">, &amp;</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">z</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">z</span><span class="s4">.</span><span class="s1">x</span><span class="s4">]);</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+
+<span class="s0">//finds the end of maze</span>
+<span class="s1">bool isEnd</span><span class="s4">(</span><span class="s1">Maze </span><span class="s4">*</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">Coordinate z</span><span class="s4">) {</span>
+    <span class="s5">return </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">z</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">z</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] == </span><span class="s3">'E'</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s0">//prints out entire maze</span>
+<span class="s5">void </span><span class="s1">printMaze</span><span class="s4">(</span><span class="s1">Maze </span><span class="s4">*</span><span class="s1">maze</span><span class="s4">) {</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">y </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">y </span><span class="s4">&lt; </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows</span><span class="s4">; </span><span class="s1">y</span><span class="s4">++) {  </span><span class="s0">// Fixed version</span>
+        <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">x </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">x </span><span class="s4">&lt; </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">cols</span><span class="s4">; </span><span class="s1">x</span><span class="s4">++) {</span>
+            <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;%c&quot;</span><span class="s4">, </span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">y</span><span class="s4">][</span><span class="s1">x</span><span class="s4">]);</span>
+        <span class="s4">}</span>
+        <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">);</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+<span class="s0">//checks if maze is solveable or not</span>
+<span class="s1">bool solvable</span><span class="s4">(</span><span class="s1">Maze </span><span class="s4">*</span><span class="s1">maze</span><span class="s4">) {</span>
+    <span class="s0">/*if (bfs(char**)) { 
+        return true; 
+    } else { 
+        return false; 
+    }*/</span>
+<span class="s4">}</span>
+
+<span class="s1">Maze</span><span class="s4">* </span><span class="s1">genMaze</span><span class="s4">(</span><span class="s5">int </span><span class="s1">width</span><span class="s4">, </span><span class="s5">int </span><span class="s1">height</span><span class="s4">) {</span>
+    <span class="s0">// Properly allocate the maze structure first</span>
+    <span class="s1">Maze</span><span class="s4">* </span><span class="s1">maze </span><span class="s4">= </span><span class="s1">malloc</span><span class="s4">(</span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Maze</span><span class="s4">));</span>
+
+    <span class="s0">// Set dimensions</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">rows </span><span class="s4">= </span><span class="s1">height</span><span class="s4">;</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">cols </span><span class="s4">= </span><span class="s1">width</span><span class="s4">;</span>
+
+    <span class="s0">// Initialize random seed</span>
+    <span class="s1">srand</span><span class="s4">(</span><span class="s1">time</span><span class="s4">(</span><span class="s1">NULL</span><span class="s4">));</span>
+
+    <span class="s0">// Allocate the 2D arrays</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray </span><span class="s4">= (</span><span class="s5">char</span><span class="s4">**)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">height </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s5">char</span><span class="s4">*));</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces </span><span class="s4">= (</span><span class="s1">Coordinate</span><span class="s4">**)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">height </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Coordinate</span><span class="s4">*));</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">height</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++) {</span>
+        <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">i</span><span class="s4">] = (</span><span class="s5">char</span><span class="s4">*)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">width </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s5">char</span><span class="s4">));</span>
+        <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">i</span><span class="s4">] = (</span><span class="s1">Coordinate</span><span class="s4">*)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">width </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Coordinate</span><span class="s4">));</span>
+        <span class="s0">// Initialize spaces coordinates</span>
+        <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">j </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">j </span><span class="s4">&lt; </span><span class="s1">width</span><span class="s4">; </span><span class="s1">j</span><span class="s4">++) {</span>
+            <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] = (</span><span class="s1">Coordinate</span><span class="s4">){</span><span class="s1">i</span><span class="s4">, </span><span class="s1">j</span><span class="s4">};</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s0">// Initialize visited list</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">visited </span><span class="s4">= </span><span class="s1">initLinkedList</span><span class="s4">();</span>
+
+    <span class="s0">// Fill maze with walls</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">height</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++) {</span>
+        <span class="s5">for</span><span class="s4">(</span><span class="s5">int </span><span class="s1">j </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">j </span><span class="s4">&lt; </span><span class="s1">width</span><span class="s4">; </span><span class="s1">j</span><span class="s4">++) {</span>
+            <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] = </span><span class="s3">'#'</span><span class="s4">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s0">// Generate start and end positions</span>
+    <span class="s5">int </span><span class="s1">startX </span><span class="s4">= </span><span class="s1">rand</span><span class="s4">() % </span><span class="s1">width</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">startY </span><span class="s4">= </span><span class="s1">rand</span><span class="s4">() % </span><span class="s1">height</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">endX </span><span class="s4">= </span><span class="s1">rand</span><span class="s4">() % </span><span class="s1">width</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">endY </span><span class="s4">= </span><span class="s1">rand</span><span class="s4">() % </span><span class="s1">height</span><span class="s4">;</span>
+
+    <span class="s0">// Ensure start and end are different</span>
+    <span class="s5">while </span><span class="s4">(</span><span class="s1">startX </span><span class="s4">== </span><span class="s1">endX </span><span class="s4">&amp;&amp; </span><span class="s1">startY </span><span class="s4">== </span><span class="s1">endY</span><span class="s4">) {</span>
+        <span class="s1">endX </span><span class="s4">= </span><span class="s1">rand</span><span class="s4">() % </span><span class="s1">width</span><span class="s4">;</span>
+        <span class="s1">endY </span><span class="s4">= </span><span class="s1">rand</span><span class="s4">() % </span><span class="s1">height</span><span class="s4">;</span>
+    <span class="s4">}</span>
+
+    <span class="s5">int </span><span class="s1">currentX </span><span class="s4">= </span><span class="s1">startX</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">currentY </span><span class="s4">= </span><span class="s1">startY</span><span class="s4">;</span>
+
+    <span class="s0">// Generate path from start to end</span>
+    <span class="s5">while </span><span class="s4">(</span><span class="s1">currentX </span><span class="s4">!= </span><span class="s1">endX </span><span class="s4">|| </span><span class="s1">currentY </span><span class="s4">!= </span><span class="s1">endY</span><span class="s4">) {</span>
+        <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">currentY</span><span class="s4">][</span><span class="s1">currentX</span><span class="s4">] = </span><span class="s3">'+'</span><span class="s4">;</span>
+
+        <span class="s5">if </span><span class="s4">((</span><span class="s1">rand</span><span class="s4">() % </span><span class="s6">2</span><span class="s4">) &amp;&amp; </span><span class="s1">currentX </span><span class="s4">!= </span><span class="s1">endX</span><span class="s4">) {</span>
+            <span class="s0">// Randomly choose to change currentX</span>
+            <span class="s5">if </span><span class="s4">(</span><span class="s1">currentX </span><span class="s4">&lt; </span><span class="s1">endX</span><span class="s4">) {</span>
+                <span class="s1">currentX </span><span class="s4">+= </span><span class="s6">1</span><span class="s4">; </span><span class="s0">// Move right</span>
+            <span class="s4">} </span><span class="s5">else </span><span class="s4">{</span>
+                <span class="s1">currentX </span><span class="s4">-= </span><span class="s6">1</span><span class="s4">; </span><span class="s0">// Move left</span>
+            <span class="s4">}</span>
+        <span class="s4">} </span><span class="s5">else if </span><span class="s4">(</span><span class="s1">currentY </span><span class="s4">!= </span><span class="s1">endY</span><span class="s4">) {</span>
+            <span class="s0">// If not changing currentX or it's already at endX, change currentY</span>
+            <span class="s5">if </span><span class="s4">(</span><span class="s1">currentY </span><span class="s4">&lt; </span><span class="s1">endY</span><span class="s4">) {</span>
+                <span class="s1">currentY </span><span class="s4">+= </span><span class="s6">1</span><span class="s4">; </span><span class="s0">// Move down</span>
+            <span class="s4">} </span><span class="s5">else </span><span class="s4">{</span>
+                <span class="s1">currentY </span><span class="s4">-= </span><span class="s6">1</span><span class="s4">; </span><span class="s0">// Move up</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s0">// Mark end position</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">endY</span><span class="s4">][</span><span class="s1">endX</span><span class="s4">] = </span><span class="s3">'E'</span><span class="s4">;</span>
+
+    <span class="s0">// Mark start and create path</span>
+    <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">startY</span><span class="s4">][</span><span class="s1">startX</span><span class="s4">] = </span><span class="s3">'S'</span><span class="s4">;</span>
+
+    <span class="s0">// Add random paths for maze complexity</span>
+    <span class="s5">int </span><span class="s1">randomPaths </span><span class="s4">= (</span><span class="s1">width </span><span class="s4">* </span><span class="s1">height</span><span class="s4">) / </span><span class="s6">3</span><span class="s4">;</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">randomPaths</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++) {</span>
+        <span class="s5">int </span><span class="s1">x </span><span class="s4">= </span><span class="s1">rand</span><span class="s4">() % </span><span class="s1">width</span><span class="s4">;</span>
+        <span class="s5">int </span><span class="s1">y </span><span class="s4">= </span><span class="s1">rand</span><span class="s4">() % </span><span class="s1">height</span><span class="s4">;</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">y</span><span class="s4">][</span><span class="s1">x</span><span class="s4">] == </span><span class="s3">'#'</span><span class="s4">) {</span>
+            <span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">mazeArray</span><span class="s4">[</span><span class="s1">y</span><span class="s4">][</span><span class="s1">x</span><span class="s4">] = </span><span class="s3">'+'</span><span class="s4">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s5">return </span><span class="s1">maze</span><span class="s4">;</span>
+<span class="s4">}</span>
+</pre>
+</body>
+</html>

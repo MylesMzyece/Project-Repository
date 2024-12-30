@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>LinkedList.h</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #cf8e6d;}
+.s5 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+LinkedList.h</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/1/24.</span>
+<span class="s0">//</span>
+
+<span class="s2">#ifndef </span><span class="s1">LINKEDLIST_H</span>
+<span class="s2">#define </span><span class="s1">LINKEDLIST_H</span>
+<span class="s2">#include </span><span class="s3">&quot;stdbool.h&quot;</span>
+
+<span class="s4">typedef struct </span><span class="s1">Node </span><span class="s5">{</span>
+    <span class="s0">// A node is an individual struct that makes up a linked list. If we were in Java, Linked List would extend Node</span>
+    <span class="s0">// But since we're in C, I'm just going to use Node in linked list.</span>
+    <span class="s4">struct </span><span class="s1">Node</span><span class="s5">* </span><span class="s1">next</span><span class="s5">;</span>
+    <span class="s4">void</span><span class="s5">* </span><span class="s1">data</span><span class="s5">;</span>
+<span class="s5">}</span><span class="s1">Node</span><span class="s5">;</span>
+
+<span class="s4">typedef struct </span><span class="s1">LinkedList </span><span class="s5">{</span>
+    <span class="s1">Node</span><span class="s5">* </span><span class="s1">head</span><span class="s5">;</span>
+    <span class="s1">Node</span><span class="s5">* </span><span class="s1">tail</span><span class="s5">;</span>
+    <span class="s0">// Just wondering if we should track size</span>
+    <span class="s4">int </span><span class="s1">size</span><span class="s5">;</span>
+<span class="s5">}</span><span class="s1">LinkedList</span><span class="s5">;</span>
+
+<span class="s4">void </span><span class="s1">addAtTail</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">list</span><span class="s5">, </span><span class="s4">void</span><span class="s5">* </span><span class="s1">data</span><span class="s5">);</span>
+<span class="s4">void </span><span class="s1">addAtHead</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">list</span><span class="s5">, </span><span class="s4">void</span><span class="s5">* </span><span class="s1">data</span><span class="s5">);</span>
+<span class="s4">void</span><span class="s5">* </span><span class="s1">removeAtTail</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">list</span><span class="s5">);</span>
+<span class="s4">void</span><span class="s5">* </span><span class="s1">removeAtHead</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">list</span><span class="s5">);</span>
+<span class="s4">void</span><span class="s5">* </span><span class="s1">peakHead</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">list</span><span class="s5">);</span>
+<span class="s4">void</span><span class="s5">* </span><span class="s1">peakTail</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">list</span><span class="s5">);</span>
+<span class="s4">void </span><span class="s1">removeNodeAt</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">list</span><span class="s5">, </span><span class="s4">int </span><span class="s1">index</span><span class="s5">);</span>
+<span class="s4">bool </span><span class="s1">contains</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">list</span><span class="s5">, </span><span class="s4">void</span><span class="s5">* </span><span class="s1">elements</span><span class="s5">, </span><span class="s4">int </span><span class="s5">(*</span><span class="s1">cmp</span><span class="s5">)(</span><span class="s4">void </span><span class="s5">*, </span><span class="s4">void </span><span class="s5">*));</span>
+<span class="s4">bool </span><span class="s1">isEmpty</span><span class="s5">(</span><span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">stack</span><span class="s5">);</span>
+<span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">initLinkedList </span><span class="s5">();</span>
+
+<span class="s2">#endif </span><span class="s0">//LINKEDLIST_H</span>
+</pre>
+</body>
+</html>

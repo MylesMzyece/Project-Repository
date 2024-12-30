@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>DFS.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #bcbec4;}
+.s5 { color: #cf8e6d;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DFS.c</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/22/24.</span>
+<span class="s0">//</span>
+
+<span class="s2">#include </span><span class="s3">&quot;DFS.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&quot;Stack.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdlib.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdio.h&gt;</span>
+
+<span class="s1">bool dfs</span><span class="s4">(</span><span class="s1">Maze </span><span class="s4">*</span><span class="s1">maze</span><span class="s4">) {</span>
+    <span class="s1">Stack </span><span class="s4">*</span><span class="s1">stack </span><span class="s4">= </span><span class="s1">initStack</span><span class="s4">();</span>
+    <span class="s5">int </span><span class="s1">yIndex</span><span class="s4">=</span><span class="s1">findStart</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">).</span><span class="s1">y</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">xIndex</span><span class="s4">=</span><span class="s1">findStart</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">).</span><span class="s1">x</span><span class="s4">;</span>
+    <span class="s1">push</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">, &amp;</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">yIndex</span><span class="s4">][</span><span class="s1">xIndex</span><span class="s4">]); </span><span class="s0">// Push the starting coordinate onto the stack</span>
+    <span class="s5">return </span><span class="s1">dfsRecursion</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">stack</span><span class="s4">);</span>
+<span class="s4">}</span>
+
+<span class="s1">bool dfsRecursion</span><span class="s4">(</span><span class="s1">Maze </span><span class="s4">*</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">Stack </span><span class="s4">*</span><span class="s1">stack</span><span class="s4">) {</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">isEmpty</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">)) {</span>
+        <span class="s5">return </span><span class="s1">false</span><span class="s4">; </span><span class="s0">// Stack is empty, no path to the end</span>
+    <span class="s4">}</span>
+    <span class="s1">Coordinate current </span><span class="s4">= *(</span><span class="s1">Coordinate </span><span class="s4">*)</span><span class="s1">peekStack</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">);</span>
+    <span class="s1">pop</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">);</span>
+    <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;Exploring coordinate: (%d, %d)</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">, </span><span class="s1">current</span><span class="s4">.</span><span class="s1">y</span><span class="s4">, </span><span class="s1">current</span><span class="s4">.</span><span class="s1">x</span><span class="s4">);</span>
+    <span class="s0">// Check if the current coordinate is the end</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">isEnd</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">current</span><span class="s4">)) {</span>
+        <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;End found at (%d, %d)</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">, </span><span class="s1">current</span><span class="s4">.</span><span class="s1">y</span><span class="s4">, </span><span class="s1">current</span><span class="s4">.</span><span class="s1">x</span><span class="s4">);</span>
+        <span class="s5">return </span><span class="s1">true</span><span class="s4">; </span><span class="s0">// End found</span>
+    <span class="s4">}</span>
+    <span class="s1">addVisited</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">current</span><span class="s4">); </span><span class="s0">// Mark current coordinate as visited</span>
+    <span class="s0">// Find valid neighbors</span>
+    <span class="s1">LinkedList </span><span class="s4">*</span><span class="s1">neighbors </span><span class="s4">= </span><span class="s1">findValidNeighbors</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">current</span><span class="s4">);</span>
+    <span class="s1">Node </span><span class="s4">*</span><span class="s1">neighborNode </span><span class="s4">= </span><span class="s1">neighbors</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">;</span>
+    <span class="s0">// Explore each neighbor</span>
+    <span class="s5">while </span><span class="s4">(</span><span class="s1">neighborNode </span><span class="s4">!= </span><span class="s1">NULL</span><span class="s4">) {</span>
+        <span class="s1">push</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">, </span><span class="s1">neighborNode</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">);</span>
+        <span class="s1">neighborNode </span><span class="s4">= </span><span class="s1">neighborNode</span><span class="s4">-&gt;</span><span class="s1">next</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s0">// Free the neighbors list after exploring all neighbors</span>
+    <span class="s1">free</span><span class="s4">(</span><span class="s1">neighbors</span><span class="s4">);</span>
+    <span class="s0">// Recursively call dfsRecursion to continue the search</span>
+    <span class="s5">return </span><span class="s1">dfsRecursion</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">stack</span><span class="s4">);</span>
+<span class="s4">}</span>
+
+
+
+</pre>
+</body>
+</html>

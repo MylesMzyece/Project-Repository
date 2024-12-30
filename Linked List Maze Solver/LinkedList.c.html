@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>LinkedList.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #bcbec4;}
+.s5 { color: #cf8e6d;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+LinkedList.c</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/1/24.</span>
+<span class="s0">//</span>
+
+<span class="s2">#include </span><span class="s3">&quot;LinkedList.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdio.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;string.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdlib.h&gt;</span>
+
+<span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">initLinkedList </span><span class="s4">() {</span>
+  <span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list </span><span class="s4">= </span><span class="s1">malloc</span><span class="s4">(</span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">)); </span><span class="s0">//Allocate memory for the linked list</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">= </span><span class="s1">NULL</span><span class="s4">; </span><span class="s0">//Neither the head nor the tail is pointing to anything</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail </span><span class="s4">= </span><span class="s1">NULL</span><span class="s4">;</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">size </span><span class="s4">= </span><span class="s6">0</span><span class="s4">;</span>
+  <span class="s5">return </span><span class="s1">list</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">addAtTail</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">, </span><span class="s5">void</span><span class="s4">* </span><span class="s1">data</span><span class="s4">) {</span>
+  <span class="s1">Node</span><span class="s4">* </span><span class="s1">node </span><span class="s4">= </span><span class="s1">malloc</span><span class="s4">(</span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Node</span><span class="s4">)); </span><span class="s0">//Allocate memory for the node</span>
+  <span class="s1">node</span><span class="s4">-&gt;</span><span class="s1">data </span><span class="s4">= </span><span class="s1">data</span><span class="s4">; </span><span class="s0">//Create a temporary node</span>
+  <span class="s1">node</span><span class="s4">-&gt;</span><span class="s1">next </span><span class="s4">= </span><span class="s1">NULL</span><span class="s4">;</span>
+  <span class="s5">if </span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">){ </span><span class="s0">//Edge case: If the list is empty</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">= </span><span class="s1">node</span><span class="s4">;</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">= </span><span class="s1">node</span><span class="s4">;</span>
+  <span class="s4">} </span><span class="s5">else </span><span class="s4">{ </span><span class="s0">//If the list is not empty</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">-&gt;</span><span class="s1">next </span><span class="s4">= </span><span class="s1">node</span><span class="s4">;</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail </span><span class="s4">= </span><span class="s1">node</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">size</span><span class="s4">++; </span><span class="s0">//increment size</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">addAtHead</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">, </span><span class="s5">void</span><span class="s4">* </span><span class="s1">data</span><span class="s4">) { </span><span class="s0">//Adds a node to the head of the list</span>
+  <span class="s1">Node</span><span class="s4">* </span><span class="s1">node </span><span class="s4">= (</span><span class="s1">Node</span><span class="s4">*)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Node</span><span class="s4">)); </span><span class="s0">//Allocate memory for the node</span>
+  <span class="s1">node</span><span class="s4">-&gt;</span><span class="s1">data </span><span class="s4">= </span><span class="s1">data</span><span class="s4">; </span><span class="s0">//Create a temporary node</span>
+  <span class="s5">if </span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">) { </span><span class="s0">//Edge case: If the list is empty</span>
+    <span class="s1">list</span><span class="s4">-&gt; </span><span class="s1">head </span><span class="s4">= </span><span class="s1">node</span><span class="s4">;</span>
+    <span class="s1">list</span><span class="s4">-&gt; </span><span class="s1">tail </span><span class="s4">= </span><span class="s1">node</span><span class="s4">;</span>
+  <span class="s4">} </span><span class="s5">else </span><span class="s4">{ </span><span class="s0">//If the list is not empty</span>
+    <span class="s1">node</span><span class="s4">-&gt;</span><span class="s1">next </span><span class="s4">= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">;</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">= </span><span class="s1">node</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">size</span><span class="s4">++;</span>
+<span class="s4">}</span>
+
+<span class="s5">void</span><span class="s4">* </span><span class="s1">removeAtTail</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">) {</span>
+  <span class="s5">if </span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">) {</span>
+    <span class="s5">return </span><span class="s1">NULL</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s5">void</span><span class="s4">* </span><span class="s1">data </span><span class="s4">= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">;</span>
+  <span class="s5">if </span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">== </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">) {  </span><span class="s0">//Edge case: If the list is empty</span>
+    <span class="s1">free</span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">);</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail </span><span class="s4">= </span><span class="s1">NULL</span><span class="s4">;</span>
+  <span class="s4">} </span><span class="s5">else </span><span class="s4">{</span>
+    <span class="s1">Node</span><span class="s4">* </span><span class="s1">node </span><span class="s4">= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">;</span>
+    <span class="s0">// Traverse to the node right before the tail</span>
+    <span class="s5">while </span><span class="s4">(</span><span class="s1">node</span><span class="s4">-&gt;</span><span class="s1">next </span><span class="s4">!= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">) {</span>
+      <span class="s1">node </span><span class="s4">= </span><span class="s1">node</span><span class="s4">-&gt;</span><span class="s1">next</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s1">free</span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">);            </span><span class="s0">// Free the tail node</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail </span><span class="s4">= </span><span class="s1">node</span><span class="s4">;         </span><span class="s0">// Update tail to the second-last node</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">-&gt;</span><span class="s1">next </span><span class="s4">= </span><span class="s1">NULL</span><span class="s4">;      </span><span class="s0">// Ensure new tail has no next</span>
+  <span class="s4">}</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">size</span><span class="s4">--;</span>
+  <span class="s5">return </span><span class="s1">data</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">void</span><span class="s4">* </span><span class="s1">removeAtHead</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">) {</span>
+  <span class="s5">if</span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">) { </span><span class="s0">//Edge case: If the list is empty</span>
+    <span class="s5">return </span><span class="s1">NULL</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s1">Node</span><span class="s4">* </span><span class="s1">temp </span><span class="s4">= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">; </span><span class="s0">//Create a temporary node</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">-&gt;</span><span class="s1">next</span><span class="s4">; </span><span class="s0">//Point head to the next node</span>
+  <span class="s5">if</span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">) {</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail </span><span class="s4">= </span><span class="s1">NULL</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s5">void</span><span class="s4">* </span><span class="s1">data </span><span class="s4">= </span><span class="s1">temp</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">;</span>
+  <span class="s1">free</span><span class="s4">(</span><span class="s1">temp</span><span class="s4">);</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">size</span><span class="s4">--;</span>
+  <span class="s5">return </span><span class="s1">data</span><span class="s4">;</span>
+<span class="s4">}</span>
+<span class="s5">void </span><span class="s1">removeNodeAt</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">, </span><span class="s5">int </span><span class="s1">index</span><span class="s4">) {</span>
+  <span class="s5">if</span><span class="s4">(</span><span class="s1">index </span><span class="s4">&lt; </span><span class="s6">0 </span><span class="s4">|| </span><span class="s1">index </span><span class="s4">&gt;= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">size </span><span class="s4">|| </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">) { </span><span class="s0">//Edge case: If the list is empty</span>
+    <span class="s5">return</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s5">if</span><span class="s4">(</span><span class="s1">index </span><span class="s4">== </span><span class="s6">0</span><span class="s4">) {</span>
+    <span class="s1">removeAtHead</span><span class="s4">(</span><span class="s1">list</span><span class="s4">);</span>
+    <span class="s5">return</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s1">Node </span><span class="s4">*</span><span class="s1">current</span><span class="s4">= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">;</span>
+  <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">index</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++) { </span><span class="s0">//Traverse to the node at the index</span>
+    <span class="s1">current </span><span class="s4">= </span><span class="s1">current</span><span class="s4">-&gt;</span><span class="s1">next</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s1">Node</span><span class="s4">* </span><span class="s1">targetNode </span><span class="s4">=  </span><span class="s1">current</span><span class="s4">-&gt;</span><span class="s1">next</span><span class="s4">;</span>
+  <span class="s1">current</span><span class="s4">-&gt;</span><span class="s1">next </span><span class="s4">= </span><span class="s1">targetNode</span><span class="s4">-&gt;</span><span class="s1">next</span><span class="s4">;</span>
+  <span class="s5">if</span><span class="s4">(</span><span class="s1">targetNode</span><span class="s4">-&gt;</span><span class="s1">next </span><span class="s4">== </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">) {</span>
+    <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail </span><span class="s4">= </span><span class="s1">current</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s1">free</span><span class="s4">(</span><span class="s1">targetNode</span><span class="s4">);</span>
+  <span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">size</span><span class="s4">--; </span><span class="s0">//Decrement size</span>
+<span class="s4">}</span>
+
+<span class="s5">void</span><span class="s4">* </span><span class="s1">peakHead</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">) {</span>
+  <span class="s5">if </span><span class="s4">(</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">) { </span><span class="s0">//Edge case: If the list is empty</span>
+    <span class="s5">return </span><span class="s1">NULL</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s5">return </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">; </span><span class="s0">//Returns the data of the head node, not the head node itself</span>
+<span class="s4">}</span>
+
+<span class="s5">void</span><span class="s4">* </span><span class="s1">peakTail</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">) {</span>
+  <span class="s5">if </span><span class="s4">(</span><span class="s1">isEmpty</span><span class="s4">(</span><span class="s1">list</span><span class="s4">)) { </span><span class="s0">//Edge case: If the list is empty</span>
+    <span class="s5">return </span><span class="s1">NULL</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s5">return </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">tail</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">; </span><span class="s0">//Returns the data of the tail node, not the tail node itself</span>
+<span class="s4">}</span>
+
+<span class="s1">bool contains</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">, </span><span class="s5">void</span><span class="s4">* </span><span class="s1">element</span><span class="s4">, </span><span class="s5">int </span><span class="s4">(*</span><span class="s1">cmp</span><span class="s4">)(</span><span class="s5">void </span><span class="s4">*, </span><span class="s5">void </span><span class="s4">*)) {</span>
+  <span class="s5">if </span><span class="s4">(</span><span class="s1">list </span><span class="s4">== </span><span class="s1">NULL </span><span class="s4">|| </span><span class="s1">element </span><span class="s4">== </span><span class="s1">NULL </span><span class="s4">|| </span><span class="s1">cmp </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">) {</span>
+    <span class="s5">return </span><span class="s1">false</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s1">Node </span><span class="s4">*</span><span class="s1">current </span><span class="s4">= </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">;</span>
+  <span class="s5">while </span><span class="s4">(</span><span class="s1">current </span><span class="s4">!= </span><span class="s1">NULL</span><span class="s4">) {</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">cmp</span><span class="s4">(</span><span class="s1">element</span><span class="s4">, </span><span class="s1">current</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">) == </span><span class="s6">0</span><span class="s4">) {  </span><span class="s0">// Swapped parameter order</span>
+      <span class="s5">return </span><span class="s1">true</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s1">current </span><span class="s4">= </span><span class="s1">current</span><span class="s4">-&gt;</span><span class="s1">next</span><span class="s4">;</span>
+  <span class="s4">}</span>
+  <span class="s5">return </span><span class="s1">false</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s1">bool isEmpty</span><span class="s4">(</span><span class="s1">LinkedList</span><span class="s4">* </span><span class="s1">list</span><span class="s4">) {</span>
+  <span class="s5">return </span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">size </span><span class="s4">== </span><span class="s6">0</span><span class="s4">; </span><span class="s0">//Returns true if the size of the list is 0</span>
+<span class="s4">}</span></pre>
+</body>
+</html>

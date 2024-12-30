@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>Stack.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #bcbec4;}
+.s5 { color: #cf8e6d;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Stack.c</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/1/24.</span>
+<span class="s0">//</span>
+<span class="s2">#include </span><span class="s3">&lt;stdio.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;string.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdlib.h&gt;</span><span class="s0">//allows use of malloc and calloc</span>
+<span class="s2">#include </span><span class="s3">&quot;Stack.h&quot;</span>
+
+<span class="s1">Stack</span><span class="s4">* </span><span class="s1">initStack</span><span class="s4">() {</span>
+    <span class="s1">Stack</span><span class="s4">* </span><span class="s1">stack </span><span class="s4">= </span><span class="s1">malloc</span><span class="s4">(</span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Stack</span><span class="s4">));</span>
+    <span class="s1">stack</span><span class="s4">-&gt;</span><span class="s1">list </span><span class="s4">= </span><span class="s1">initLinkedList</span><span class="s4">();  </span><span class="s0">// Initialize the internal linked list</span>
+    <span class="s5">return </span><span class="s1">stack</span><span class="s4">;</span>
+<span class="s4">};</span>
+
+<span class="s1">bool isStackEmpty</span><span class="s4">(</span><span class="s1">Stack</span><span class="s4">* </span><span class="s1">stack</span><span class="s4">) {</span>
+    <span class="s5">return </span><span class="s1">isEmpty</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">);</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">pop</span><span class="s4">(</span><span class="s1">Stack</span><span class="s4">* </span><span class="s1">stack</span><span class="s4">) {</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">isStackEmpty</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">)) {</span>
+        <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;Stack is empty</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">);</span>
+        <span class="s5">return</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s1">removeAtHead</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">);</span>
+<span class="s4">}</span>
+
+<span class="s5">void</span><span class="s4">* </span><span class="s1">peekStack</span><span class="s4">(</span><span class="s1">Stack</span><span class="s4">* </span><span class="s1">stack</span><span class="s4">) {</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">isStackEmpty</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">)) {</span>
+        <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;Stack is empty</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">);</span>
+        <span class="s5">return </span><span class="s1">NULL</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s5">return </span><span class="s1">stack</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">push</span><span class="s4">(</span><span class="s1">Stack</span><span class="s4">* </span><span class="s1">stack</span><span class="s4">, </span><span class="s5">void</span><span class="s4">* </span><span class="s1">data</span><span class="s4">) {</span>
+    <span class="s1">addAtHead</span><span class="s4">(</span><span class="s1">stack</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">, </span><span class="s1">data</span><span class="s4">);</span>
+<span class="s4">}</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>main.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #cf8e6d;}
+.s5 { color: #bcbec4;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.c</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/1/24.</span>
+<span class="s0">//</span>
+<span class="s2">#include </span><span class="s3">&lt;stdio.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;string.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdlib.h&gt;</span><span class="s0">//allows use of malloc and calloc</span>
+<span class="s2">#include </span><span class="s3">&lt;time.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&quot;Maze.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&quot;Main.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&quot;DFS.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&quot;BFS.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdbool.h&gt;</span>
+
+<span class="s4">int </span><span class="s1">main</span><span class="s5">(){</span>
+    <span class="s1">printInstructions</span><span class="s5">();</span>
+    <span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze </span><span class="s5">= </span><span class="s1">pickMaze</span><span class="s5">();</span>
+    <span class="s1">printMaze</span><span class="s5">(</span><span class="s1">maze</span><span class="s5">);</span>
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;Which algorithm would you like to use to solve the maze? </span><span class="s4">\n</span><span class="s3">1. Breadth-first search(BFS) </span><span class="s4">\n</span><span class="s3">2. Depth-first search (DFS)</span><span class="s4">\n</span><span class="s3">&quot;</span><span class="s5">);</span>
+    <span class="s1">useAlg</span><span class="s5">(</span><span class="s1">maze</span><span class="s5">);</span>
+<span class="s5">}</span>
+
+<span class="s4">void </span><span class="s1">printInstructions</span><span class="s5">() {</span>
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;This program is a maze solver. </span><span class="s4">\n</span><span class="s3">There are two different ways in which this this program can solve a maze: </span><span class="s4">\n\n</span><span class="s3">Breadth-first search(BFS) and Depth-first search (DFS);</span><span class="s4">\n\n</span><span class="s3">&quot;</span><span class="s5">);</span>
+<span class="s5">}</span>
+
+<span class="s1">Maze </span><span class="s5">*</span><span class="s1">pickMaze</span><span class="s5">() {</span>
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;There are 4 options of mazes to choose from: </span><span class="s4">\n</span><span class="s3">1. Easy </span><span class="s4">\n</span><span class="s3">2. Medium </span><span class="s4">\n</span><span class="s3">3. Hard </span><span class="s4">\n</span><span class="s3">4. Random</span><span class="s4">\n\n</span><span class="s3">&quot;</span><span class="s5">);</span>
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;Pick one of the options: &quot;</span><span class="s5">);</span>
+    <span class="s4">int </span><span class="s1">choice</span><span class="s5">;</span>
+    <span class="s1">scanf</span><span class="s5">(</span><span class="s3">&quot;%d&quot;</span><span class="s5">, &amp;</span><span class="s1">choice</span><span class="s5">);</span>
+
+    <span class="s4">if </span><span class="s5">(</span><span class="s1">choice </span><span class="s5">== </span><span class="s6">1</span><span class="s5">) {</span>
+        <span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze </span><span class="s5">= </span><span class="s1">readFile</span><span class="s5">(</span><span class="s3">&quot;../LinkedListProject/Mazes/Maze1_S_E.txt&quot;</span><span class="s5">);</span>
+        <span class="s4">return </span><span class="s1">maze</span><span class="s5">;</span>
+    <span class="s5">}</span>
+
+    <span class="s4">if </span><span class="s5">(</span><span class="s1">choice </span><span class="s5">== </span><span class="s6">2</span><span class="s5">) {</span>
+        <span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze </span><span class="s5">= </span><span class="s1">readFile</span><span class="s5">(</span><span class="s3">&quot;../LinkedListProject/Mazes/Maze2_S_M.txt&quot;</span><span class="s5">);</span>
+        <span class="s4">return </span><span class="s1">maze</span><span class="s5">;</span>
+    <span class="s5">}</span>
+
+    <span class="s4">if </span><span class="s5">(</span><span class="s1">choice </span><span class="s5">== </span><span class="s6">3</span><span class="s5">) {</span>
+        <span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze </span><span class="s5">= </span><span class="s1">readFile</span><span class="s5">(</span><span class="s3">&quot;../LinkedListProject/Mazes/Maze3_S_H.txt&quot;</span><span class="s5">);</span>
+        <span class="s4">return </span><span class="s1">maze</span><span class="s5">;</span>
+
+    <span class="s5">}</span>
+
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">What are your desired dimensions of the maze? (width x height): </span><span class="s4">\n</span><span class="s3">&quot;</span><span class="s5">);</span>
+    <span class="s4">int </span><span class="s1">width</span><span class="s5">, </span><span class="s1">height</span><span class="s5">;</span>
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;Height: &quot;</span><span class="s5">);</span>
+    <span class="s1">scanf</span><span class="s5">(</span><span class="s3">&quot;%d&quot;</span><span class="s5">, &amp;</span><span class="s1">height</span><span class="s5">);</span>
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;Width: &quot;</span><span class="s5">);</span>
+    <span class="s1">scanf</span><span class="s5">(</span><span class="s3">&quot;%d&quot;</span><span class="s5">, &amp;</span><span class="s1">width</span><span class="s5">);</span>
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">&quot;</span><span class="s5">);</span>
+    <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;Generating maze...</span><span class="s4">\n\n</span><span class="s3">&quot;</span><span class="s5">);</span>
+    <span class="s4">return </span><span class="s1">genMaze</span><span class="s5">(</span><span class="s1">width</span><span class="s5">, </span><span class="s1">height</span><span class="s5">);</span>
+<span class="s5">}</span>
+
+<span class="s4">void </span><span class="s1">useAlg</span><span class="s5">(</span><span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze</span><span class="s5">) {</span>
+    <span class="s4">int </span><span class="s1">choice</span><span class="s5">;</span>
+    <span class="s1">scanf</span><span class="s5">(</span><span class="s3">&quot;%d&quot;</span><span class="s5">, &amp;</span><span class="s1">choice</span><span class="s5">);</span>
+    <span class="s4">if </span><span class="s5">(</span><span class="s1">choice </span><span class="s5">== </span><span class="s6">1</span><span class="s5">) {</span>
+        <span class="s1">Queue </span><span class="s5">*</span><span class="s1">queue </span><span class="s5">= </span><span class="s1">initQueue</span><span class="s5">();</span>
+        <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;%d&quot;</span><span class="s5">, </span><span class="s1">bfs</span><span class="s5">(</span><span class="s1">maze</span><span class="s5">, </span><span class="s1">queue</span><span class="s5">));</span>
+    <span class="s5">} </span><span class="s4">else </span><span class="s5">{</span>
+        <span class="s1">printf</span><span class="s5">(</span><span class="s3">&quot;%d&quot;</span><span class="s5">, </span><span class="s1">dfs</span><span class="s5">(</span><span class="s1">maze</span><span class="s5">));</span>
+    <span class="s5">}</span>
+<span class="s5">}</span>
+
+
+
+</pre>
+</body>
+</html>

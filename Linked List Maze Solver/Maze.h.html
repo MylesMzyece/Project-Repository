@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>Maze.h</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #cf8e6d;}
+.s5 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Maze.h</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/1/24.</span>
+<span class="s0">//</span>
+
+<span class="s2">#ifndef </span><span class="s1">MAZE_H</span>
+<span class="s2">#define </span><span class="s1">MAZE_H</span>
+<span class="s2">#include </span><span class="s3">&lt;stdbool.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&quot;LinkedList.h&quot;</span>
+
+<span class="s0">//structure to represent coordinates in the maze</span>
+<span class="s4">typedef struct </span><span class="s1">Coordinate </span><span class="s5">{</span>
+    <span class="s4">int </span><span class="s1">y</span><span class="s5">;</span>
+    <span class="s4">int </span><span class="s1">x</span><span class="s5">;</span>
+<span class="s5">} </span><span class="s1">Coordinate</span><span class="s5">;</span>
+
+<span class="s4">typedef struct </span><span class="s1">Maze </span><span class="s5">{</span>
+    <span class="s4">char</span><span class="s5">** </span><span class="s1">mazeArray</span><span class="s5">;</span>
+    <span class="s4">int </span><span class="s1">rows</span><span class="s5">;</span>
+    <span class="s4">int </span><span class="s1">cols</span><span class="s5">;</span>
+    <span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">visited</span><span class="s5">;</span>
+    <span class="s1">Coordinate</span><span class="s5">** </span><span class="s1">spaces</span><span class="s5">;</span>
+<span class="s5">} </span><span class="s1">Maze</span><span class="s5">;</span>
+
+
+<span class="s0">// Reads the maze from a file and returns a 2D array of characters</span>
+<span class="s1">Maze</span><span class="s5">* </span><span class="s1">readFile</span><span class="s5">(</span><span class="s4">const char</span><span class="s5">* </span><span class="s1">fileName</span><span class="s5">);</span>
+
+<span class="s0">// Finds the starting coordinate in the maze, returns (-1,-1) if the start is not found</span>
+<span class="s1">Coordinate findStart</span><span class="s5">(</span><span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze</span><span class="s5">);</span>
+
+<span class="s0">// Finds valid neighbors around a given coordinate and returns them as a linked list</span>
+<span class="s0">//Order of the linked list will be up, down, left, right</span>
+<span class="s1">LinkedList</span><span class="s5">* </span><span class="s1">findValidNeighbors</span><span class="s5">(</span><span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze</span><span class="s5">, </span><span class="s1">Coordinate z</span><span class="s5">);</span>
+
+<span class="s0">// Adds a coordinate to the global visited list</span>
+<span class="s4">void </span><span class="s1">addVisited</span><span class="s5">(</span><span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze</span><span class="s5">, </span><span class="s1">Coordinate z</span><span class="s5">);</span>
+<span class="s4">int </span><span class="s1">coordinateCmp</span><span class="s5">(</span><span class="s4">void</span><span class="s5">* </span><span class="s1">a</span><span class="s5">, </span><span class="s4">void </span><span class="s5">*</span><span class="s1">b</span><span class="s5">);</span>
+
+
+<span class="s0">// Checks if a coordinate is the end of the maze</span>
+<span class="s4">bool </span><span class="s1">isEnd</span><span class="s5">(</span><span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze</span><span class="s5">, </span><span class="s1">Coordinate z</span><span class="s5">);</span>
+
+<span class="s0">// Prints the maze to the console</span>
+<span class="s4">void </span><span class="s1">printMaze</span><span class="s5">(</span><span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze</span><span class="s5">);</span>
+
+<span class="s1">Maze</span><span class="s5">* </span><span class="s1">genMaze</span><span class="s5">(</span><span class="s4">int </span><span class="s1">width</span><span class="s5">, </span><span class="s4">int </span><span class="s1">height</span><span class="s5">);</span>
+
+<span class="s4">bool </span><span class="s1">solvable</span><span class="s5">(</span><span class="s1">Maze </span><span class="s5">*</span><span class="s1">maze</span><span class="s5">);</span>
+
+<span class="s2">#endif </span><span class="s0">//MAZE_H</span></pre>
+</body>
+</html>

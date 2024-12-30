@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>Queue.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #bcbec4;}
+.s5 { color: #cf8e6d;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Queue.c</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/1/24.</span>
+<span class="s0">//</span>
+<span class="s2">#include </span><span class="s3">&lt;stdio.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;string.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdlib.h&gt;</span><span class="s0">//allows use of malloc and calloc</span>
+<span class="s2">#include </span><span class="s3">&quot;Queue.h&quot;</span>
+
+<span class="s1">Queue </span><span class="s4">*</span><span class="s1">initQueue</span><span class="s4">() {</span>
+    <span class="s0">//This method is used to create a new  queue</span>
+    <span class="s1">Queue </span><span class="s4">*</span><span class="s1">queue </span><span class="s4">= (</span><span class="s1">Queue</span><span class="s4">*)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">Queue</span><span class="s4">));</span>
+    <span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list </span><span class="s4">= </span><span class="s1">initLinkedList</span><span class="s4">(); </span><span class="s0">// Initialize the internal linked list</span>
+    <span class="s5">return </span><span class="s1">queue</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">enqueue</span><span class="s4">(</span><span class="s1">Queue </span><span class="s4">*</span><span class="s1">queue</span><span class="s4">, </span><span class="s5">void </span><span class="s4">*</span><span class="s1">data</span><span class="s4">) {</span>
+    <span class="s0">//adds an item to the tail of the queue</span>
+    <span class="s1">addAtTail</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">, </span><span class="s1">data</span><span class="s4">);</span>
+<span class="s4">}</span>
+
+<span class="s5">void</span><span class="s4">* </span><span class="s1">dequeue</span><span class="s4">(</span><span class="s1">Queue </span><span class="s4">*</span><span class="s1">queue</span><span class="s4">) {</span>
+    <span class="s0">//removes an item from the front of the queue and returns its value</span>
+    <span class="s5">if</span><span class="s4">(</span><span class="s1">isEmpty</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">)) {</span>
+        <span class="s5">return </span><span class="s1">NULL</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s5">void </span><span class="s4">*</span><span class="s1">data </span><span class="s4">= </span><span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">; </span><span class="s0">//store data before removing node</span>
+    <span class="s1">removeAtHead</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">);</span>
+    <span class="s5">return </span><span class="s1">data</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s4">*</span><span class="s1">peekQueue</span><span class="s4">(</span><span class="s1">Queue </span><span class="s4">*</span><span class="s1">queue</span><span class="s4">) {</span>
+    <span class="s0">//returns the data at the head of the queue without dequeueing it</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">isEmpty</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">)) {</span>
+        <span class="s0">//checks to see if list is empty</span>
+        <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;Queue is empty</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">);</span>
+        <span class="s5">return </span><span class="s1">NULL</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s5">return </span><span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">clearQueue</span><span class="s4">(</span><span class="s1">Queue </span><span class="s4">*</span><span class="s1">queue</span><span class="s4">) {</span>
+    <span class="s0">//removes every item from the queue, size is 0</span>
+    <span class="s5">while </span><span class="s4">(!</span><span class="s1">isEmpty</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">)) {</span>
+        <span class="s1">dequeue</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">);</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+</pre>
+</body>
+</html>

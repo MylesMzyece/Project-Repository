@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>BFS.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #bcbec4;}
+.s5 { color: #cf8e6d;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+BFS.c</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by csteffensen25 on 10/22/24.</span>
+<span class="s0">//</span>
+<span class="s2">#include </span><span class="s3">&lt;stdio.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;string.h&gt;</span>
+<span class="s2">#include </span><span class="s3">&lt;stdlib.h&gt;</span><span class="s0">//allows use of malloc and calloc</span>
+<span class="s2">#include </span><span class="s3">&quot;Queue.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&quot;LinkedList.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&quot;BFS.h&quot;</span>
+<span class="s2">#include </span><span class="s3">&quot;Maze.h&quot;</span>
+
+
+<span class="s1">bool bfs</span><span class="s4">(</span><span class="s1">Maze </span><span class="s4">*</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">Queue </span><span class="s4">*</span><span class="s1">queue</span><span class="s4">) {</span>
+    <span class="s0">//the bfs method finds the start then calls the recursive method</span>
+    <span class="s5">int </span><span class="s1">yIndex</span><span class="s4">=</span><span class="s1">findStart</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">).</span><span class="s1">y</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">xIndex</span><span class="s4">=</span><span class="s1">findStart</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">).</span><span class="s1">x</span><span class="s4">;</span>
+    <span class="s1">enqueue</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">, &amp;</span><span class="s1">maze</span><span class="s4">-&gt;</span><span class="s1">spaces</span><span class="s4">[</span><span class="s1">yIndex</span><span class="s4">][</span><span class="s1">xIndex</span><span class="s4">]);</span>
+    <span class="s5">return </span><span class="s1">bfsRecursion</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">queue</span><span class="s4">); </span><span class="s0">//returns bool</span>
+<span class="s4">}</span>
+
+<span class="s1">bool bfsRecursion</span><span class="s4">(</span><span class="s1">Maze </span><span class="s4">*</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">Queue </span><span class="s4">*</span><span class="s1">queue</span><span class="s4">) {</span>
+    <span class="s0">//bool recursive method called for bfs, takes in queue with starting point and searches for end</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">isEmpty</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">-&gt;</span><span class="s1">list</span><span class="s4">)) {</span>
+        <span class="s0">//basecase-1</span>
+        <span class="s0">//queue will be empty if all locations are visited meaning</span>
+        <span class="s5">return </span><span class="s1">false</span><span class="s4">; </span><span class="s0">//return that there is no end</span>
+    <span class="s4">}</span>
+    <span class="s1">Coordinate current </span><span class="s4">= *(</span><span class="s1">Coordinate</span><span class="s4">*) </span><span class="s1">peekQueue</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">);</span>
+    <span class="s5">int </span><span class="s1">yIndex </span><span class="s4">= </span><span class="s1">current</span><span class="s4">.</span><span class="s1">y</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">xIndex </span><span class="s4">= </span><span class="s1">current</span><span class="s4">.</span><span class="s1">x</span><span class="s4">;</span>
+    <span class="s1">dequeue</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">); </span><span class="s0">//dequeues coord</span>
+    <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;Visiting Coordinate: (%d, %d)</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">, </span><span class="s1">yIndex</span><span class="s4">, </span><span class="s1">xIndex</span><span class="s4">);</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">isEnd</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">current</span><span class="s4">)){</span>
+        <span class="s0">//basecase-2</span>
+        <span class="s1">printf</span><span class="s4">(</span><span class="s3">&quot;Reached the end at Coordinate: (%d, %d)</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s4">, </span><span class="s1">yIndex</span><span class="s4">, </span><span class="s1">xIndex</span><span class="s4">);</span>
+        <span class="s5">return </span><span class="s1">true</span><span class="s4">; </span><span class="s0">//return end coordinate eventually</span>
+        <span class="s0">//returns true if current coord is the end</span>
+    <span class="s4">}</span>
+    <span class="s1">addVisited</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">current</span><span class="s4">); </span><span class="s0">//adds current coordinate to visited list</span>
+    <span class="s1">LinkedList </span><span class="s4">*</span><span class="s1">neighbors </span><span class="s4">= </span><span class="s1">findValidNeighbors</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">current</span><span class="s4">);</span>
+    <span class="s1">Node </span><span class="s4">*</span><span class="s1">node </span><span class="s4">= </span><span class="s1">neighbors</span><span class="s4">-&gt;</span><span class="s1">head</span><span class="s4">; </span><span class="s0">//gets head's neighbors</span>
+    <span class="s5">while </span><span class="s4">(</span><span class="s1">node </span><span class="s4">!= </span><span class="s1">NULL</span><span class="s4">) {</span>
+        <span class="s1">enqueue</span><span class="s4">(</span><span class="s1">queue</span><span class="s4">, </span><span class="s1">node</span><span class="s4">-&gt;</span><span class="s1">data</span><span class="s4">); </span><span class="s0">//enqueues list of neighbor nodes</span>
+        <span class="s1">node </span><span class="s4">= </span><span class="s1">node</span><span class="s4">-&gt;</span><span class="s1">next</span><span class="s4">;</span>
+    <span class="s4">}</span>
+    <span class="s1">free</span><span class="s4">(</span><span class="s1">neighbors</span><span class="s4">);</span>
+    <span class="s5">return </span><span class="s1">bfsRecursion</span><span class="s4">(</span><span class="s1">maze</span><span class="s4">, </span><span class="s1">queue</span><span class="s4">); </span><span class="s0">//recursive callback</span>
+<span class="s4">}</span>
+</pre>
+</body>
+</html>
