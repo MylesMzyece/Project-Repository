@@ -1,0 +1,35 @@
+Is it an animal?
+Is it alive?
+Is it furniture?
+Is it food?
+Rock?
+null
+null
+blueberry?
+null
+null
+chair?
+null
+null
+Can it speak?
+Tree?
+null
+null
+minion?
+null
+null
+Is it furry?
+does it have feathers?
+Lizard?
+null
+null
+bird
+null
+null
+does it have claws?
+Dog?
+null
+null
+cat
+null
+null
